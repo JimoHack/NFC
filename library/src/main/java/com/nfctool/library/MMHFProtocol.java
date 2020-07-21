@@ -2,7 +2,7 @@ package com.nfctool.library;
 
 import java.io.File;
 
-public abstract class MMHFProtocol {
+public class MMHFProtocol {
 
     public static class Record {
         byte length  ; // 1Byte
@@ -29,6 +29,10 @@ public abstract class MMHFProtocol {
      * @param file 要解析的文件
      * @return 解析得到的对象
      */
-    public abstract MMHFProtocol parse(File file) ;
+    public static MMHF parse(File file) {
+        MMHF ret = new MMHF() ;
+        /// 实现解析文件
+        return ret ;
+    }
 
 }
