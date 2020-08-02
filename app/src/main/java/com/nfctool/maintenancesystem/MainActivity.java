@@ -13,11 +13,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Environment;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;g
+import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -174,7 +175,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    private ArrayList<File> SearchFile(String filename,File fFileName) { ///dfs搜索文件
+    private ArrayList<File> SearchFile(File fFileName) { ///dfs搜索文件
+//        Log.d(TAG,fFileName.getPath() + "," + fFileName.isDirectory());
         ArrayList<File> FileName  = new ArrayList<>() ;
         try{
             File[] files = fFileName.listFiles();
@@ -187,13 +189,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             FileName.add(files[i]) ;
                         }
                     } else{
-                        FileName.addAll(SearchFile(filename,files[i])) ;
-                        ///Log.d(TAG,files[i].getPath()) ;
+                        FileName.addAll(SearchFile(files[i])) ;
+//                        Log.d(TAG,files[i].getPath()) ;
                     }
                 }
             }
         } catch (Exception e) {
-
+            Log.e(TAG,"Error on searchFile! " + e.toString()) ;
         }
         return FileName ;
     }
@@ -218,8 +220,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //处理耗时逻辑
                         Message msg1 = new Message(),msg2 = new Message();
                         msg1.what = MSG_1 ; handler.sendMessage(msg1);
-                        files = SearchFile(".hex", new File("/sdcard/"));
-                        Log.d(TAG,"files count == " + files.size()) ;
+//                        File sdcard = new File("/sdcard/") ;
+                        File sdcard = Environment.getExternalStorageDirectory();
+                        if (sdcard == null || !sdcard.exists()) {
+                            Log.e(TAG,"open \"/sdcard/\" error!!!");
+                        }
+                        files = SearchFile(sdcard);
+//                        Log.d(TAG,"files count == " + files.size()) ;
                         files.sort(
                                 new Comparator<File>() {
                                     @Override
